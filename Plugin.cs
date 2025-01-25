@@ -20,7 +20,6 @@ namespace CustomHUD
         public static Plugin instance;
         public AssetBundle assets;
         public GameObject HUD;
-        public static bool shouldDoKGConversion = false;
 
         internal static ConfigEntry<PocketFlashlightOptions> pocketedFlashlightDisplayMode;
         internal static ConfigEntry<StaminaTextOptions> detailedStamina;
@@ -29,6 +28,7 @@ namespace CustomHUD
         internal static ConfigEntry<bool> autoHideHealthbar;
         internal static ConfigEntry<float> healthbarHideDelay;
         internal static ConfigEntry<bool> hidePlanetInfo;
+        public static ConfigEntry<bool> shouldDoKGConversion;
 
         private void Awake()
         {
@@ -52,7 +52,7 @@ PercentageOnly - Only the percentage will be displayed. (recommended)
 Full - Both percentage and rate of gain/loss will be displayed.");
             displayTimeLeft = Config.Bind("General", "DisplayTimeLeft", true, "Should the uses/time left for a battery-using item be displayed.");
             hidePlanetInfo = Config.Bind("General", "HidePlanetInfo", false, "Should planet info be hidden. If modifying from an in-game menu, this requires you to rejoin the game.");
-
+            shouldDoKGConversion = Config.Bind("General", "UseMetricUnits", false, "Use Metric weight unit (kg) for the weight display");
 
             Logger.LogInfo($"Plugin Elad's HUD is loaded!");
 
@@ -72,7 +72,10 @@ Full - Both percentage and rate of gain/loss will be displayed.");
             {
                 Logger.LogInfo("Plugin GUID: " + chain.Value.Metadata.GUID);
             }
-            shouldDoKGConversion = Chainloader.PluginInfos.Any(pair => pair.Value.Metadata.GUID == "com.zduniusz.lethalcompany.lbtokg");
+
+            if (Chainloader.PluginInfos.Any(pair => pair.Value.Metadata.GUID == "com.zduniusz.lethalcompany.lbtokg")) {
+                shouldDoKGConversion.Value = true;
+            }
         }
     }
 
